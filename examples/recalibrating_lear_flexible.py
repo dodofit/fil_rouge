@@ -13,13 +13,13 @@ import os
 
 from epftoolbox.data import read_data
 from epftoolbox.evaluation import MAE, sMAPE
-from epftoolbox.models import LEAR
+from epftoolbox.models_dorian import LEAR
 
 # ------------------------------ EXTERNAL PARAMETERS ------------------------------------#
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--dataset", type=str, default='PJM', 
+parser.add_argument("--dataset", type=str, default='FR',
                     help='Market under study. If it not one of the standard ones, the file name' +
                          'has to be provided, where the file has to be a csv file')
 

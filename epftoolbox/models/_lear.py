@@ -432,3 +432,104 @@ def evaluate_lear_in_test_dataset(path_datasets_folder=os.path.join('.', 'datase
         forecast.to_csv(forecast_file_path)
 
     return forecast
+
+
+def evaluate_lear_in_test_dataset_refreshed(path_datasets_folder=os.path.join('.', 'datasets'),
+                                  path_recalibration_folder=os.path.join('.', 'experimental_files'),
+                                  dataset='PJM', years_test=2, calibration_window=364 * 3,
+                                  begin_test_date=None, end_test_date=None):
+    """Function for easy evaluation of the LEAR model in a test dataset using daily recalibration.
+
+    The test dataset is defined by a market name and the test dates dates. The function
+    generates the test and training datasets, and evaluates a LEAR model considering daily recalibration.
+
+    An example on how to use this function is provided :ref:`here<learex1>`.
+
+    Parameters
+    ----------
+    path_datasets_folder : str, optional
+        path where the datasets are stored or, if they do not exist yet,
+        the path where the datasets are to be stored.
+
+    path_recalibration_folder : str, optional
+        path to save the files of the experiment dataset.
+
+    dataset : str, optional
+        Name of the dataset/market under study. If it is one one of the standard markets,
+        i.e. ``"PJM"``, ``"NP"``, ``"BE"``, ``"FR"``, or ``"DE"``, the dataset is automatically downloaded. If the name
+        is different, a dataset with a csv format should be place in the ``path_datasets_folder``.
+
+    years_test : int, optional
+        Number of years (a year is 364 days) in the test dataset. It is only used if
+        the arguments ``begin_test_date`` and ``end_test_date`` are not provided.
+
+    calibration_window : int, optional
+        Number of days used in the training dataset for recalibration.
+
+    begin_test_date : datetime/str, optional
+        Optional parameter to select the test dataset. Used in combination with the argument
+        ``end_test_date``. If either of them is not provided, the test dataset is built using the
+        ``years_test`` argument. ``begin_test_date`` should either be a string with the following
+        format ``"%d/%m/%Y %H:%M"``, or a datetime object.
+
+    end_test_date : datetime/str, optional
+        Optional parameter to select the test dataset. Used in combination with the argument
+        ``begin_test_date``. If either of them is not provided, the test dataset is built using the
+        ``years_test`` argument. ``end_test_date`` should either be a string with the following
+        format ``"%d/%m/%Y %H:%M"``, or a datetime object.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A dataframe with all the predictions in the test dataset. The dataframe is also written to path_recalibration_folder.
+    """
+
+    # Checking if provided directory for recalibration exists and if not create it
+    if not os.path.exists(path_recalibration_folder):
+        os.makedirs(path_recalibration_folder)
+
+    # Defining train and testing data
+    df_train, df_test = read_data(begin_test_date=begin_test_date, end_test_date=end_test_date)
+
+    # Defining unique name to save the forecast
+    forecast_file_name = 'LEAR_forecast' + '_dat' + str(dataset) + '_YT' + str(years_test) + \
+                         '_CW' + str(calibration_window) + '.csv'
+
+    forecast_file_path = os.path.join(path_recalibration_folder, forecast_file_name)
+
+    # Defining empty forecast array and the real values to be predicted in a more friendly format
+    forecast = pd.DataFrame(index=df_test.index[::24], columns=['h' + str(k) for k in range(24)])
+    real_values = df_test.loc[:, ['Price']].values.reshape(-1, 24)
+    real_values = pd.DataFrame(real_values, index=forecast.index, columns=forecast.columns)
+
+    forecast_dates = forecast.index
+
+    model = LEAR(calibration_window=calibration_window)
+
+    # For loop over the recalibration dates
+    for date in forecast_dates:
+        # For simulation purposes, we assume that the available data is
+        # the data up to current date where the prices of current date are not known
+        data_available = pd.concat([df_train, df_test.loc[:date + pd.Timedelta(hours=23), :]], axis=0)
+
+        # We set the real prices for current date to NaN in the dataframe of available data
+        data_available.loc[date:date + pd.Timedelta(hours=23), 'Price'] = np.NaN
+
+        # Recalibrating the model with the most up-to-date available data and making a prediction
+        # for the next day
+        Yp = model.recalibrate_and_forecast_next_day(df=data_available, next_day_date=date,
+                                                     calibration_window=calibration_window)
+        # Saving the current prediction
+        forecast.loc[date, :] = Yp
+
+        # Computing metrics up-to-current-date
+        mae = np.mean(MAE(forecast.loc[:date].values.squeeze(), real_values.loc[:date].values))
+        smape = np.mean(sMAPE(forecast.loc[:date].values.squeeze(), real_values.loc[:date].values)) * 100
+
+        # Pringint information
+        print('{} - sMAPE: {:.2f}%  |  MAE: {:.3f}'.format(str(date)[:10], smape, mae))
+
+        # Saving forecast
+        forecast.to_csv(forecast_file_path)
+
+    return forecast

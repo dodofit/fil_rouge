@@ -205,6 +205,8 @@ def read_data_refreshed(dataset='BE',timezone = 'Europe/Brussels', years_test=2,
     print('Test datasets: {} - {}'.format(begin_test_date, end_test_date))
     df_train = df_all.loc[:begin_test_date - pd.Timedelta(hours=1), :]
     df_test = df_all.loc[begin_test_date:end_test_date, :]
+    df_train.index = df_train.index.strftime('%Y-%m-%d %H:%M:%S')
+    df_test.index = df_test.index.strftime('%Y-%m-%d %H:%M:%S')
 
     return df_train, df_test
 

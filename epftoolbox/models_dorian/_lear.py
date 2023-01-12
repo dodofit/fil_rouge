@@ -226,6 +226,8 @@ class LEAR(object):
                 pastIndexTest = pd.to_datetime(indexTest.loc[:, 'h' + str(hour)].values) - \
                     pd.Timedelta(hours=24 * past_day)
 
+                print(pastIndexTrain)#test
+
                 # We include the historical prices at day D-past_day and hour "h" 
                 Xtrain[:, feature_index] = df_train.loc[pastIndexTrain, 'Price']
                 Xtest[:, feature_index] = df_test.loc[pastIndexTest, 'Price']

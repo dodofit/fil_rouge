@@ -13,7 +13,7 @@ import os
 from epftoolbox.data import read_data
 from epftoolbox.evaluation import MAE, sMAPE
 from epftoolbox.models_dorian import LEAR
-from epftoolbox.data._datasets import read_data_refreshed
+from epftoolbox.data import read_data_refreshed
 
 # ------------------------------ EXTERNAL PARAMETERS ------------------------------------#
 
@@ -55,7 +55,15 @@ path_recalibration_folder = os.path.join('.', 'experimental_files')
     
     
 # Defining train and testing data
-df_train, df_test = read_data_refreshed(begin_test_date='2021-12-31', end_test_date='2022-01-31')
+#df_train, df_test = read_data_refreshed(begin_test_date='2021-12-31', end_test_date='2022-01-31')
+#df_train.index = df_train.index.strftime('%Y-%m-%d %H:%M:%S')
+#df_test.index = df_test.index.strftime('%Y-%m-%d %H:%M:%S')
+df_train = pd.read_pickle('/Users/dorianfitton/Documents/Cours_Télécom/fil_rouge/fil_rouge/notebook_projet/dorian/datasets/2021-12-31_test/2021-12-31_df_train')
+df_test = pd.read_pickle('/Users/dorianfitton/Documents/Cours_Télécom/fil_rouge/fil_rouge/notebook_projet/dorian/datasets/2021-12-31_test/2021-12-31_df_test')
+df_train.index = pd.to_datetime(df_train.index)
+df_test.index = pd.to_datetime(df_test.index)
+
+
 
 # Defining unique name to save the forecast
 forecast_file_name = 'fc_nl' + '_dat' + str(dataset) + '_YT' + str(years_test) + \
@@ -82,6 +90,8 @@ for date in forecast_dates:
 
     # We set the real prices for current date to NaN in the dataframe of available data
     data_available.loc[date:date + pd.Timedelta(hours=23), 'Price'] = np.NaN
+
+    print(data_available.loc[pd.to_datetime('2019-03-31 02:00:00')]) ##test
 
     # Recalibrating the model with the most up-to-date available data and making a prediction
     # for the next day

@@ -11,7 +11,8 @@ import numpy as np
 import argparse
 import os
 
-from epftoolbox.data import read_data
+#from epftoolbox.data import read_data
+from epftoolbox.data import read_data_refreshed_2
 from epftoolbox.evaluation import MAE, sMAPE
 from epftoolbox.models_dorian import LEAR
 
@@ -50,12 +51,16 @@ calibration_window = args.calibration_window
 begin_test_date = args.begin_test_date
 end_test_date = args.end_test_date
 
+#test_add
+begin_test_date = '2021-03-01'
+end_test_date = '2021-03-20'
+
 path_datasets_folder = os.path.join('.', 'datasets')
 path_recalibration_folder = os.path.join('.', 'experimental_files')
     
     
 # Defining train and testing data
-df_train, df_test = read_data(dataset=dataset, years_test=years_test, path=path_datasets_folder,
+df_train, df_test = read_data_refreshed_2(dataset=dataset, years_test=years_test, path=path_datasets_folder,
                               begin_test_date=begin_test_date, end_test_date=end_test_date)
 
 # Defining unique name to save the forecast
@@ -76,7 +81,6 @@ model = LEAR(calibration_window=calibration_window)
 
 # For loop over the recalibration dates
 for date in forecast_dates:
-
     # For simulation purposes, we assume that the available data is
     # the data up to current date where the prices of current date are not known
     data_available = pd.concat([df_train, df_test.loc[:date + pd.Timedelta(hours=23), :]], axis=0)

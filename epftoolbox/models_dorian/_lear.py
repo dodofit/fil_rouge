@@ -139,33 +139,78 @@ class LEAR(object):
 
         return Yp
 
+    def recalibrate_and_forecast_next_day(self, df, calibration_window, next_day_date):
+        """Easy-to-use interface for daily recalibration and forecasting of the LEAR model.
+
+        The function receives a pandas dataframe and a date. Usually, the data should
+        correspond with the date of the next-day when using for daily recalibration.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Dataframe of historical data containing prices and *N* exogenous inputs.
+            The index of the dataframe should be dates with hourly frequency. The columns
+            should have the following names ``['Price', 'Exogenous 1', 'Exogenous 2', ...., 'Exogenous N']``.
+
+        calibration_window : int
+            Calibration window (in days) for the LEAR model.
+
+        next_day_date : datetime
+            Date of the day-ahead.
+
+        Returns
+        -------
+        numpy.array
+            The prediction of day-ahead prices.
+        """
+
+        # We define the new training dataset and test datasets
+        df_train = df.loc[:next_day_date - pd.Timedelta(hours=1)]
+        # Limiting the training dataset to the calibration window
+        df_train = df_train.iloc[-self.calibration_window * 24:]
+
+        # We define the test dataset as the next day (they day of interest) plus the last two weeks
+        # in order to be able to build the necessary input features.
+        df_test = df.loc[next_day_date - pd.Timedelta(weeks=2):, :]
+
+
+        # Generating X,Y pairs for predicting prices
+        Xtrain, Ytrain, Xtest, = self._build_and_split_XYs(
+            df_train=df_train, df_test=df_test, date_test=next_day_date)
+
+        # Recalibrating the LEAR model and extracting the prediction
+        Yp = self.recalibrate_predict(Xtrain=Xtrain, Ytrain=Ytrain, Xtest=Xtest)
+
+        return Yp
+
+
     def _build_and_split_XYs(self, df_train, df_test=None, date_test=None):
-        
+
         """Internal function that generates the X,Y arrays for training and testing based on pandas dataframes
-        
+
         Parameters
         ----------
         df_train : pandas.DataFrame
             Pandas dataframe containing the training data
-        
+
         df_test : pandas.DataFrame
             Pandas dataframe containing the test data
-        
+
         date_test : datetime, optional
             If given, then the test dataset is only built for that date
-        
+
         Returns
         -------
         list
-            [Xtrain, Ytrain, Xtest] as the list containing the (X,Y) input/output pairs for training, 
+            [Xtrain, Ytrain, Xtest] as the list containing the (X,Y) input/output pairs for training,
             and the input for testing
         """
 
-        # Checking that the first index in the dataframes corresponds with the hour 00:00 
+        # Checking that the first index in the dataframes corresponds with the hour 00:00
         if df_train.index[0].hour != 0 or df_test.index[0].hour != 0:
             print('Problem with the index')
 
-        # 
+        #
         # Defining the number of Exogenous inputs
         n_exogenous_inputs = len(df_train.columns) - 1
 
@@ -177,7 +222,7 @@ class LEAR(object):
 
         # Extracting the predicted dates for testing and training. We leave the first week of data
         # out of the prediction as we the maximum lag can be one week
-        
+
         # We define the potential time indexes that have to be forecasted in training
         # and testing
         indexTrain = df_train.loc[df_train.index[0] + pd.Timedelta(weeks=1):].index
@@ -190,7 +235,7 @@ class LEAR(object):
             indexTest = df_test.loc[date_test:date_test + pd.Timedelta(hours=23)].index
 
         # We extract the prediction dates/days.
-        predDatesTrain = indexTrain.round('1H')[::24]                
+        predDatesTrain = indexTrain.round('1H')[::24]
         predDatesTest = indexTest.round('1H')[::24]
 
         # We create two dataframe to build XY.
@@ -202,15 +247,15 @@ class LEAR(object):
             indexTrain.loc[:, 'h' + str(hour)] = indexTrain.index + pd.Timedelta(hours=hour)
             indexTest.loc[:, 'h' + str(hour)] = indexTest.index + pd.Timedelta(hours=hour)
 
-        
-        # Preallocating in memory the X and Y arrays          
+
+        # Preallocating in memory the X and Y arrays
         Xtrain = np.zeros([indexTrain.shape[0], n_features])
         Xtest = np.zeros([indexTest.shape[0], n_features])
         Ytrain = np.zeros([indexTrain.shape[0], 24])
 
-        # Index that 
+        # Index that
         feature_index = 0
-        
+
         #
         # Adding the historial prices during days D-1, D-2, D-3, and D-7
         #
@@ -220,7 +265,7 @@ class LEAR(object):
             # For each possible past day where prices can be included
             for past_day in [1, 2, 3, 7]:
 
-                # We define the corresponding past time indexs using the auxiliary dataframses 
+                # We define the corresponding past time indexs using the auxiliary dataframses
                 pastIndexTrain = pd.to_datetime(indexTrain.loc[:, 'h' + str(hour)].values) - \
                     pd.Timedelta(hours=24 * past_day)
                 pastIndexTest = pd.to_datetime(indexTest.loc[:, 'h' + str(hour)].values) - \
@@ -228,7 +273,7 @@ class LEAR(object):
 
                 print(pastIndexTrain)#test
 
-                # We include the historical prices at day D-past_day and hour "h" 
+                # We include the historical prices at day D-past_day and hour "h"
                 Xtrain[:, feature_index] = df_train.loc[pastIndexTrain, 'Price']
                 Xtest[:, feature_index] = df_test.loc[pastIndexTest, 'Price']
                 feature_index += 1
@@ -243,27 +288,27 @@ class LEAR(object):
                 # For each of the exogenous input
                 for exog in range(1, n_exogenous_inputs + 1):
 
-                    # Definying the corresponding past time indexs using the auxiliary dataframses 
+                    # Definying the corresponding past time indexs using the auxiliary dataframses
                     pastIndexTrain = pd.to_datetime(indexTrain.loc[:, 'h' + str(hour)].values) - \
                         pd.Timedelta(hours=24 * past_day)
                     pastIndexTest = pd.to_datetime(indexTest.loc[:, 'h' + str(hour)].values) - \
                         pd.Timedelta(hours=24 * past_day)
 
-                    # Including the exogenous input at day D-past_day and hour "h" 
-                    Xtrain[:, feature_index] = df_train.loc[pastIndexTrain, 'Exogenous ' + str(exog)]                    
+                    # Including the exogenous input at day D-past_day and hour "h"
+                    Xtrain[:, feature_index] = df_train.loc[pastIndexTrain, 'Exogenous ' + str(exog)]
                     Xtest[:, feature_index] = df_test.loc[pastIndexTest, 'Exogenous ' + str(exog)]
                     feature_index += 1
 
             # For each of the exogenous inputs we include feature if feature selection indicates it
             for exog in range(1, n_exogenous_inputs + 1):
-                
-                # Definying the corresponding future time indexs using the auxiliary dataframses 
+
+                # Definying the corresponding future time indexs using the auxiliary dataframses
                 futureIndexTrain = pd.to_datetime(indexTrain.loc[:, 'h' + str(hour)].values)
                 futureIndexTest = pd.to_datetime(indexTest.loc[:, 'h' + str(hour)].values)
 
-                # Including the exogenous input at day D and hour "h" 
-                Xtrain[:, feature_index] = df_train.loc[futureIndexTrain, 'Exogenous ' + str(exog)]        
-                Xtest[:, feature_index] = df_test.loc[futureIndexTest, 'Exogenous ' + str(exog)] 
+                # Including the exogenous input at day D and hour "h"
+                Xtrain[:, feature_index] = df_train.loc[futureIndexTrain, 'Exogenous ' + str(exog)]
+                Xtest[:, feature_index] = df_test.loc[futureIndexTest, 'Exogenous ' + str(exog)]
                 feature_index += 1
 
         #
@@ -282,54 +327,9 @@ class LEAR(object):
             futureIndexTest = pd.to_datetime(indexTest.loc[:, 'h' + str(hour)].values)
 
             # Extracting Y value based on time indexs
-            Ytrain[:, hour] = df_train.loc[futureIndexTrain, 'Price']        
+            Ytrain[:, hour] = df_train.loc[futureIndexTrain, 'Price']
 
         return Xtrain, Ytrain, Xtest
-
-
-    def recalibrate_and_forecast_next_day(self, df, calibration_window, next_day_date):
-        """Easy-to-use interface for daily recalibration and forecasting of the LEAR model.
-        
-        The function receives a pandas dataframe and a date. Usually, the data should
-        correspond with the date of the next-day when using for daily recalibration.
-        
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            Dataframe of historical data containing prices and *N* exogenous inputs. 
-            The index of the dataframe should be dates with hourly frequency. The columns 
-            should have the following names ``['Price', 'Exogenous 1', 'Exogenous 2', ...., 'Exogenous N']``.
-        
-        calibration_window : int
-            Calibration window (in days) for the LEAR model.
-        
-        next_day_date : datetime
-            Date of the day-ahead.
-        
-        Returns
-        -------
-        numpy.array
-            The prediction of day-ahead prices.
-        """
-
-        # We define the new training dataset and test datasets 
-        df_train = df.loc[:next_day_date - pd.Timedelta(hours=1)]
-        # Limiting the training dataset to the calibration window
-        df_train = df_train.iloc[-self.calibration_window * 24:]
-    
-        # We define the test dataset as the next day (they day of interest) plus the last two weeks
-        # in order to be able to build the necessary input features. 
-        df_test = df.loc[next_day_date - pd.Timedelta(weeks=2):, :]
-
-
-        # Generating X,Y pairs for predicting prices
-        Xtrain, Ytrain, Xtest, = self._build_and_split_XYs(
-            df_train=df_train, df_test=df_test, date_test=next_day_date)
-
-        # Recalibrating the LEAR model and extracting the prediction
-        Yp = self.recalibrate_predict(Xtrain=Xtrain, Ytrain=Ytrain, Xtest=Xtest)
-
-        return Yp
 
 
 def evaluate_lear_in_test_dataset(path_datasets_folder=os.path.join('.', 'datasets'), 

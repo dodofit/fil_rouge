@@ -10,7 +10,7 @@ Function to read electricity market data either locally or from an online databa
 import pandas as pd
 import os
 
-def read_data(path, dataset='PJM', years_test=2, begin_test_date=None, end_test_date=None):
+def read_data_refreshed_2(path, dataset='PJM', years_test=2, begin_test_date=None, end_test_date=None):
     """Function to read and import data from day-ahead electricity markets. 
     
     It receives a ``dataset`` name, and the ``path`` of the folder where datasets are saved. 

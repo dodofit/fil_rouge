@@ -91,7 +91,7 @@ df_train, df_test = read_data(dataset=dataset, years_test=years_test, path=path_
 forecast_file_name = 'fc_nl' + str(nlayers) + '_dat' + str(dataset) + \
                    '_YT' + str(years_test) + '_SF' + str(shuffle_train) + \
                    '_DA' * data_augmentation + '_CW' + str(calibration_window) + \
-                   '_' + str(experiment_id) + '_test.csv'
+                   '_' + str(experiment_id) + '_W_RENEW.csv'
 
 forecast_file_path = os.path.join(path_recalibration_folder, forecast_file_name)
 

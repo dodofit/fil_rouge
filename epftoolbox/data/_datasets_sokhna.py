@@ -101,7 +101,7 @@ def read_data_refreshed_2(path, dataset='PJM', years_test=2, begin_test_date=Non
     # If dataset is one of the existing open-access ones,
     # they are imported if they exist locally or download from 
     # the repository if they do not
-    if dataset in ['PJM', 'NP', 'FR', 'BE', 'DE', 'FR_new']:
+    if dataset in ['PJM', 'NP', 'FR', 'BE', 'DE', 'FR_new', 'FR_W_RENEW']:
         file_path = os.path.join(path, dataset + '.csv')
 
         # The first time this function is called, the datasets

@@ -14,6 +14,12 @@ import time
 import pickle as pc
 import os
 
+import sys
+import os
+
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'epftoolbox'))
+sys.path.append(module_dir)
+
 import tensorflow.keras as kr
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Input, Dropout, AlphaDropout, BatchNormalization
@@ -21,9 +27,9 @@ from tensorflow.keras.regularizers import l2, l1
 from tensorflow.keras.layers import LeakyReLU, PReLU
 import tensorflow.keras.backend as K
 
-from epftoolbox.evaluation import MAE, sMAPE
-from epftoolbox.data import scaling
-from epftoolbox.data import read_data
+from evaluation import MAE, sMAPE
+from data import scaling
+from data import read_data
 
 
 class DNNModel(object):

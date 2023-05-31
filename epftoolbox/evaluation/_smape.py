@@ -8,7 +8,7 @@ Function that implements the symmetric mean absolute percentage error (sMAPE) me
 
 
 import numpy as np
-from epftoolbox.evaluation._ancillary_functions import _process_inputs_for_metrics
+from evaluation._ancillary_functions import _process_inputs_for_metrics
 
 
 def sMAPE(p_real, p_pred):

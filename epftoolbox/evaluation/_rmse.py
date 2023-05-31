@@ -7,7 +7,7 @@ Function that implements the root mean square error (RMSE) metric.
 # License: AGPL-3.0 License
 
 import numpy as np
-from epftoolbox.evaluation._ancillary_functions import _process_inputs_for_metrics
+from evaluation._ancillary_functions import _process_inputs_for_metrics
 
 
 def RMSE(p_real, p_pred):

@@ -8,8 +8,8 @@ Function that implements the mean absolute scaled error (MASE) metric.
 
 
 import numpy as np
-from epftoolbox.evaluation._ancillary_functions import _process_inputs_for_metrics, naive_forecast, _transform_input_prices_for_naive_forecast
-from epftoolbox.evaluation import MAE
+from evaluation._ancillary_functions import _process_inputs_for_metrics, naive_forecast, _transform_input_prices_for_naive_forecast
+from evaluation import MAE
 
 
 def MASE(p_real, p_pred, p_real_in, m=None, freq='1H'):

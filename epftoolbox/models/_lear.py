@@ -5,6 +5,11 @@ Classes and functions to implement the LEAR model for electricity price forecast
 # Author: Jesus Lago
 
 # License: AGPL-3.0 License
+import sys
+import os
+
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'epftoolbox'))
+sys.path.append(module_dir)
 
 import numpy as np
 import pandas as pd
@@ -12,9 +17,9 @@ from statsmodels.robust import mad
 import os
 
 from sklearn.linear_model import LassoLarsIC, Lasso
-from epftoolbox.data import scaling
-from epftoolbox.data import read_data
-from epftoolbox.evaluation import MAE, sMAPE
+from data import scaling
+from data import read_data
+from evaluation import MAE, sMAPE
 
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning

@@ -6,14 +6,20 @@ Example for using the DNN model for forecasting prices with daily recalibration
 
 # License: AGPL-3.0 License
 
-import pandas as pd
-import numpy as np
-import argparse
+
+import sys
 import os
 
-from epftoolbox.data import read_data
-from epftoolbox.evaluation import MAE, sMAPE
-from epftoolbox.models import DNN
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'epftoolbox'))
+sys.path.append(module_dir)
+
+from data import read_data
+from models import DNN
+from evaluation import MAE, sMAPE
+import argparse
+import pandas as pd 
+import numpy as np 
+
 
 
 
@@ -23,7 +29,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--nlayers", help="Number of layers in DNN", type=int, default=2)
 
-parser.add_argument("--dataset", type=str, default='PJM', 
+parser.add_argument("--dataset", type=str, default='FR', 
                     help='Market under study. If it not one of the standard ones, the file name' +
                          'has to be provided, where the file has to be a csv file')
 
@@ -85,7 +91,7 @@ df_train, df_test = read_data(dataset=dataset, years_test=years_test, path=path_
 forecast_file_name = 'fc_nl' + str(nlayers) + '_dat' + str(dataset) + \
                    '_YT' + str(years_test) + '_SF' + str(shuffle_train) + \
                    '_DA' * data_augmentation + '_CW' + str(calibration_window) + \
-                   '_' + str(experiment_id) + '.csv'
+                   '_' + str(experiment_id) + '_test.csv'
 
 forecast_file_path = os.path.join(path_recalibration_folder, forecast_file_name)
 

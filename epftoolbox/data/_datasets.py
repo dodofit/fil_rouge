@@ -218,7 +218,7 @@ def read_data_refreshed(dataset='BE',timezone = 'Europe/Brussels', years_test=2,
 
 def read_local_data(dataset='FR', path = None, years_test=2, begin_test_date=None, end_test_date=None,):
 
-    data = pd.read_csv(path+f'/EPEX_{dataset} 2.csv', header=0, names=['Exogenous 2', 'Exogenous 1','Price'])
+    data = pd.read_csv(path+f'/EPEX_{dataset}.csv', header=0, names=['Exogenous 2', 'Exogenous 1','Price'])
     data=data.interpolate('linear')
     timezone = str(pd.to_datetime(data.index[0]).tzinfo)
     print(data)

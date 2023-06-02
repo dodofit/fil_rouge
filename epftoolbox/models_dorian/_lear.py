@@ -67,6 +67,7 @@ class LEAR(object):
         # # Rescaling all inputs except dummies (7 last features)
         [Xtrain_no_dummies], self.scalerX = scaling([Xtrain[:, :-7]], 'Invariant')
         Xtrain[:, :-7] = Xtrain_no_dummies
+        pd.DataFrame(Xtrain).to_csv('test_Xtrain.csv')
 
         self.models = {}
         for h in range(24):
@@ -177,6 +178,8 @@ class LEAR(object):
         # Generating X,Y pairs for predicting prices
         Xtrain, Ytrain, Xtest, = self._build_and_split_XYs(
             df_train=df_train, df_test=df_test, date_test=next_day_date)
+        Xtrain = pd.DataFrame(Xtrain).dropna(axis=1)
+        Xtest = pd.DataFrame(Xtest).dropna(axis=1)
 
         # Recalibrating the LEAR model and extracting the prediction
         Yp = self.recalibrate_predict(Xtrain=Xtrain, Ytrain=Ytrain, Xtest=Xtest)

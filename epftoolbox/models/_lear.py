@@ -74,14 +74,19 @@ class LEAR(object):
         Xtrain[:, :-7] = Xtrain_no_dummies
 
         self.models = {}
-        for h in range(24):
 
+        Xtrain = pd.DataFrame(Xtrain).dropna(axis=1).values
+
+        for h in range(24):
+            
             # Estimating lambda hyperparameter using LARS
             param_model = LassoLarsIC(criterion='aic', max_iter=2500)
             param = param_model.fit(Xtrain, Ytrain[:, h]).alpha_
 
             # Re-calibrating LEAR using standard LASSO estimation technique
             model = Lasso(max_iter=2500, alpha=param)
+            
+            #Xtest = pd.DataFrame(Xtest).dropna(axis=1).values
             model.fit(Xtrain, Ytrain[:, h])
 
             self.models[h] = model
@@ -106,6 +111,10 @@ class LEAR(object):
         # # Rescaling all inputs except dummies (7 last features)
         X_no_dummies = self.scalerX.transform(X[:, :-7])
         X[:, :-7] = X_no_dummies
+
+        X[np.isinf(X)] = np.nan
+        X = pd.DataFrame(X).dropna(axis=1).values
+        #print(pd.DataFrame(X).loc[:,pd.DataFrame(X).isna().any(axis=1)]) 
 
         # Predicting the current date using a recalibrated LEAR
         for h in range(24):

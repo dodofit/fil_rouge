@@ -85,8 +85,6 @@ class LEAR(object):
 
             # Re-calibrating LEAR using standard LASSO estimation technique
             model = Lasso(max_iter=2500, alpha=param)
-            
-            #Xtest = pd.DataFrame(Xtest).dropna(axis=1).values
             model.fit(Xtrain, Ytrain[:, h])
 
             self.models[h] = model

@@ -1,8 +1,6 @@
 import torch 
 import pandas as pd 
-<<<<<<< HEAD
 import numpy as np
-=======
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -18,7 +16,3 @@ class LSTM(nn.Module):
 
     def forward(sel, x):
         pass
-
-
-
->>>>>>> lstm

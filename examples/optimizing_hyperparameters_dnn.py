@@ -5,26 +5,29 @@ Example for optimizing the hyperparameter and features of the DNN model
 # Author: Jesus Lago
 
 # License: AGPL-3.0 License
+import os,sys
 
+module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'epftoolbox'))
+sys.path.append(module_dir)
 
-from epftoolbox.models import hyperparameter_optimizer
+from models import hyperparameter_optimizer
 
 # Number of layers in DNN
-nlayers = 2
+nlayers = 3
 
 # Market under study. If it not one of the standard ones, the file name
 # has to be provided, where the file has to be a csv file
-dataset = 'FR_NEW_UTC_W_RENEW'
+dataset = 'FR_NEW_UTC'
 
 # Number of years (a year is 364 days) in the test dataset.
-years_test = 2
+years_test = 1
 
 # Optional parameters for selecting the test dataset, if either of them is not provided, 
 # the test dataset is built using the years_test parameter. They should either be one of
 # the date formats existing in python or a string with the following format
 # "%d/%m/%Y %H:%M"
-begin_test_date = "01/01/2019 00:00:00"
-end_test_date = "31/12/2020 23:00:00"
+begin_test_date = "01/01/2021 00:00:00"
+end_test_date = "31/12/2022 23:00:00"
 
 # Boolean that selects whether the validation and training datasets are shuffled
 shuffle_train = 1

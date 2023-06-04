@@ -105,7 +105,7 @@ def read_data(path, dataset='FR', years_test=2, begin_test_date=None, end_test_d
     # If dataset is one of the existing open-access ones,
     # they are imported if they exist locally or download from
     # the repository if they do not
-    if dataset in ['PJM', 'NP', 'FR', 'BE', 'DE', 'FR_NEW_UTC_W_RENEW']:
+    if dataset in ['PJM', 'NP', 'FR', 'BE', 'DE', 'FR_NEW_UTC_W_RENEW', 'FR_NEW_UTC']:
         file_path = os.path.join(path, dataset + '.csv')
 
         # The first time this function is called, the datasets

@@ -13,11 +13,11 @@ sys.path.append(module_dir)
 from models import hyperparameter_optimizer
 
 # Number of layers in DNN
-nlayers = 3
+nlayers = 2
 
 # Market under study. If it not one of the standard ones, the file name
 # has to be provided, where the file has to be a csv file
-dataset = 'FR_NEW_UTC'
+dataset = 'FR_NEW_UTC_W_RENEW'
 
 # Number of years (a year is 364 days) in the test dataset.
 years_test = 1
@@ -26,8 +26,8 @@ years_test = 1
 # the test dataset is built using the years_test parameter. They should either be one of
 # the date formats existing in python or a string with the following format
 # "%d/%m/%Y %H:%M"
-begin_test_date = "01/01/2021 00:00:00"
-end_test_date = "31/12/2022 23:00:00"
+begin_test_date = "01/01/2020 00:00:00"
+end_test_date = "31/12/2020 23:00:00"
 
 # Boolean that selects whether the validation and training datasets are shuffled
 shuffle_train = 1
@@ -35,7 +35,7 @@ shuffle_train = 1
 # Boolean that selects whether a data augmentation technique for DNNs is used
 data_augmentation = 0
 
-# Boolean that selects whether we start a new hyperparameter optimization or we restart an existing one
+# Boolean that selects w06ether we start a new hyperparameter optimization or we restart an existing one
 new_hyperopt = 1
 
 # Number of years used in the training dataset for recalibration
@@ -45,7 +45,7 @@ calibration_window = 2
 experiment_id = 1
 
 # Number of iterations for hyperparameter optimization
-max_evals = 1500
+max_evals = 1000
 
 path_datasets_folder = "./datasets/"
 path_hyperparameters_folder = "./experimental_files/"

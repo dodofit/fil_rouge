@@ -118,13 +118,13 @@ class DNNModel(object):
             opt = 'adam'
         else:
             if optimizer == 'adam':
-                opt = kr.optimizers.Adam(lr=lr, clipvalue=10000)
+                opt = kr.optimizers.Adam(learning_rate=lr, clipvalue=10000)
             if optimizer == 'RMSprop':
-                opt = kr.optimizers.RMSprop(lr=lr, clipvalue=10000)
+                opt = kr.optimizers.RMSprop(learning_rate=lr, clipvalue=10000)
             if optimizer == 'adagrad':
-                opt = kr.optimizers.Adagrad(lr=lr, clipvalue=10000)
+                opt = kr.optimizers.Adagrad(learning_rate=lr, clipvalue=10000)
             if optimizer == 'adadelta':
-                opt = kr.optimizers.Adadelta(lr=lr, clipvalue=10000)
+                opt = kr.optimizers.Adadelta(learning_rate=lr, clipvalue=10000)
 
         self.model.compile(loss=loss, optimizer=opt)
 

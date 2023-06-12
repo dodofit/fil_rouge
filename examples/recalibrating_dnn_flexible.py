@@ -86,6 +86,7 @@ path_hyperparameter_folder = os.path.join('.', 'experimental_files')
 # Defining train and testing data
 df_train, df_test = read_data(dataset=dataset, years_test=years_test, path=path_datasets_folder,
                               begin_test_date=begin_test_date, end_test_date=end_test_date)
+print(df_test.index[0], df_test.index[-1])
 
 # Defining unique name to save the forecast
 forecast_file_name = 'fc_nl' + str(nlayers) + '_dat' + str(dataset) + \
@@ -97,8 +98,8 @@ forecast_file_path = os.path.join(path_recalibration_folder, forecast_file_name)
 
 # Defining empty forecast array and the real values to be predicted in a more friendly format
 forecast = pd.DataFrame(index=df_test.index[::24], columns=['h' + str(k) for k in range(24)])
-real_values = df_test.loc[:, ['Price']].values.reshape(-1, 24)
-real_values = pd.DataFrame(real_values, index=forecast.index, columns=forecast.columns)
+real_values = df_test.iloc[:-23, 0].values.reshape(-1, 24)
+real_values = pd.DataFrame(real_values, index=forecast.index[:-1], columns=forecast.columns)
 
 # If we are not starting a new recalibration but re-starting an old one, we import the
 # existing files and print metrics 

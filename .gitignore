@@ -123,3 +123,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# BigQuery Key
+production/BigQuery/electricity-price-forecasting-0c7716d276ef.json

@@ -126,3 +126,9 @@ dmypy.json
 
 # BigQuery Key
 production/BigQuery/electricity-price-forecasting-0c7716d276ef.json
+
+# Default .gitignore content added by dbt Cloud
+production/target/
+production/dbt_packages/
+production/logs/
+# end dbt Cloud content

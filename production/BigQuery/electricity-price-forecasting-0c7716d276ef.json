@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "electricity-price-forecasting",
+  "private_key_id": "0c7716d276efa36cee79c99740a979887f1b8e80",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDGcoRw73oeh//F\nNrUn9A/xnBY3TX1R57Yk4ku4TFjKAEqSSpD1xiTdjoEOlNbXDVppr5ftkZp4IcRD\n8Iq+6p4H2r2k1GtYcS1WURLABfrwOLasZy/mnjrr3pn3/n1iXK+ZNrTHoHJOBNj+\ncbQra/YBE70MlHRJ+oCCpH9cvtjsxgeRljjsgDE4HV7RK+wQg/35L8pRfKtee4BH\nS1lQYGdzavOz28an8Eg2lgQ2POqRfisqTiLqkHEK76raFgrWnifh6byB71soMG++\nL4k8oPLlrY1lL1SIOHbXh98ReMnylEu81aBHI/EgC2e76oNJTB/iDpWCjU2W6AKK\nJL7lCywVAgMBAAECggEALurrSiIsTqSbwX4uNVx8GoTrMbcF3oP4ad8AxPlz8opA\nFzc+74ShuaoT9CUXaC+1hRApTNckXKurEd8AhqPEqhm6xYodOQNFE0fGtZSUYBAg\njEE3L4CQcKyn3VyTO1qrf39SHXJfI/f8b6flT3DOcDHA/ATrO4RYtsp6fCx47/11\nPvHTZYGKuxdE2IwFjuqxGuiWblBaw/7d5xCqpJ4wIMDIv86LgOBStd9JGI03xt2b\n9nL1bcUfKEZD+h0x6E2bB5+g/paDmVfnnhZcxn8uCuDU787usBxCo79QqOorfIUa\nN84NbV/bWJw0zzT7LnSkdt/JWDLzrUo2UkEfaKJFLwKBgQDi144I6DTZgUkM7Ni7\nrMkQUVbpBIBkbApYAUeBahgXXA6pfLhEVawfs9SUFHIDwy0wh0pdht16ANQVTxTS\nTyOU+XrSm48eOrWKNB+g9hPH5s+WmJbr0xu1tfqx2aUvH8heyyjRx/q2Zz6nP2Nz\n+55nPNAjX/Y6u4lCG8dDxik20wKBgQDf9JwJiBU+53p3UTcf6wynbWGFBM3uf8Cf\nG+p0MWCx/Cqw21RTkL88xZIUCGjc6GopUZZfaXTHBSCtUfOU4QDEqxv4qKITNkSD\n4MDcMSw3XH/O68qA9gcwaBOLE2HC+hv0Q8sJvM7kSaF3MkGk/EcUaIm5hMRlQaBm\nZSN4M0SQdwKBgHNKtUDnrDzEDfnIwxsX5ZUqki6agBsKInO6KrqmzpnIyxbvccQh\nevsd7jRY893frC8XA//nFNf2ZdRyvhVp7Z7A8eDq+WGW2z/j4BNyHnmiYO2cnlA7\nmsDPPhx4jxEVaURso1GD/3QHo3tjp0uCnm7AJNVl54LQYCG+dpeGttnLAoGABr0h\nhNfna8EjWjvDYN59vvv3lz0RxT9q2F7KqzxhIHnp/vBalTkhx/5Z6uhl31/O8fdW\ngwB1Vxe8Z/qzTaOHlmNfsBfC6LkVTrKQmw+PuQq7fcpyiXbduIMpM2Id6vQDq1Hu\n5hgcUZo1lZSZjRFaQi7zFfX8wt86qFoaux8vzPkCgYA+ZE4OtWAa6GyxnZV79+tG\n9ASGQkX/SQz7xOSoUuY+ZWv0b4Q0tAtP17jQk2gqgqN2WaFo68aA3ZPzUytOxwsp\nkWSNj3ffOcCcGO3uH8UYLeqtasE8dbN/Q+xaNbk1vI9R+M0lvMHB928YtcH68ULe\n4WorTV5Y94BW0gAbYSg2DQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "dbt-user@electricity-price-forecasting.iam.gserviceaccount.com",
+  "client_id": "113294039094406597747",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dbt-user%40electricity-price-forecasting.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
